@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Smoke Test Runner</title>
+</head>
+<body>
+    <h1>Smoke Test Results</h1>
+    <div id="results"></div>
+    
+    <script src="config.js"></script>
+    <script>
+        // Mock DOM elements needed by app.js
+        const mockElement = { 
+            addEventListener: () => {}, 
+            classList: { add: () => {}, remove: () => {} },
+            style: {},
+            textContent: '',
+            innerHTML: '',
+            value: '',
+            checked: false
+        };
+        
+        // Create minimal DOM structure
+        document.querySelectorAll = () => [mockElement];
+        document.getElementById = () => mockElement;
+        document.querySelector = () => mockElement;
+    </script>
+    <script src="app.js"></script>
+    <script>
+        // Run smoke tests after a short delay
+        setTimeout(() => {
+            const resultsDiv = document.getElementById('results');
+            
+            // Capture console output
+            const originalLog = console.log;
+            let output = '';
+            console.log = function(...args) {
+                output += args.join(' ') + '<br>';
+                originalLog.apply(console, args);
+            };
+            
+            // Run tests
+            if (typeof window.runSmokeTests === 'function') {
+                window.runSmokeTests();
+                resultsDiv.innerHTML = output;
+            } else {
+                resultsDiv.innerHTML = 'Smoke test function not found!';
+            }
+            
+            // Restore console
+            console.log = originalLog;
+        }, 100);
+    </script>
+</body>
+</html>

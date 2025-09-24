@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jetzt Erbschaftssteuer inkl. Freibetrag, Steuerklasse & Sonderregelungen berechnen. Kostenlos & unverbindlich.">
+    <title>Erbschaftssteuer-Rechner Deutschland – Steuerlast in 60 Sekunden berechnen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <!-- Header -->
+        <header class="calculator-header">
+            <div class="calculator-icon" aria-hidden="true">
+                <img src="assets/header-icon.svg" alt="">
+            </div>
+            <h1>Erweiterte Erbschaftssteuer-Berechnung</h1>
+            <p class="subtitle">Detaillierte Berechnung der deutschen Erbschaftssteuer unter Berücksichtigung aller relevanten Vermögensarten, Freibeträge, Abzüge und Sonderregelungen.</p>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">Grunddaten</div>
+                <div class="step" data-step="2">Vermögen</div>
+                <div class="step" data-step="3">Abzüge</div>
+                <div class="step" data-step="4">Besonderheiten</div>
+                <div class="step" data-step="5">Ergebnis</div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <form id="taxCalculatorForm" class="calculator-form">
+            <!-- Step 1: Grunddaten -->
+            <div class="form-step active" id="step1">
+                <h2>👤 Grundlegende Informationen</h2>
+                <p class="step-subtitle">Verwandtschaftsverhältnis und Bundesland</p>
+                
+                <div class="form-group">
+                    <label for="relationship">
+                        Verwandtschaftsverhältnis
+                        <span class="required">*</span>
+                        <button type="button" class="info-btn" data-tooltip="Das Verwandtschaftsverhältnis bestimmt die Steuerklasse und damit die Höhe der Freibeträge und Steuersätze.">
+                            <img src="assets/info-icon.svg" alt="Info">
+                        </button>
+                    </label>
+                    <select id="relationship" name="relationship" required>
+                        <option value="">Beziehung zum Verstorbenen wählen</option>
+                        <option value="ehegatte">Ehegatte/eingetragener Lebenspartner</option>
+                        <option value="kind">Kind/Stiefkind</option>
+                        <option value="enkel">Enkel</option>
+                        <option value="eltern">Eltern</option>
+                        <option value="grosseltern">Großeltern</option>
+                        <option value="geschwister">Geschwister</option>
+                        <option value="nichten_neffen">Nichten/Neffen</option>
+                        <option value="schwiegerkinder">Schwiegerkinder</option>
+                        <option value="geschiedener_ehegatte">Geschiedener Ehegatte</option>
+                        <option value="sonstige">Sonstige Verwandte</option>
+                        <option value="nicht_verwandt">Nicht verwandt</option>
+                    </select>
+                    <span class="error-message" id="relationship-error"></span>
+                </div>
+
+                <div class="form-group" id="childAgeGroup" style="display: none;">
+                    <label for="childAge">
+                        Alter des Kindes
+                        <span class="required">*</span>
+                        <button type="button" class="info-btn" data-tooltip="Das Alter des Kindes beeinflusst den Versorgungsfreibetrag. Je jünger das Kind, desto höher der Freibetrag.">
+                            <img src="assets/info-icon.svg" alt="Info">
+                        </button>
+                    </label>
+                    <input type="number" id="childAge" name="childAge" min="0" max="27" placeholder="Jahre">
+                    <span class="error-message" id="childAge-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">
+                        Bundesland des Erbfalls
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <select id="state" name="state">
+                        <option value="">Bundesland wählen</option>
+                        <option value="baden-wuerttemberg">Baden-Württemberg</option>
+                        <option value="bayern">Bayern</option>
+                        <option value="berlin">Berlin</option>
+                        <option value="brandenburg">Brandenburg</option>
+                        <option value="bremen">Bremen</option>
+                        <option value="hamburg">Hamburg</option>
+                        <option value="hessen">Hessen</option>
+                        <option value="mecklenburg-vorpommern">Mecklenburg-Vorpommern</option>
+                        <option value="niedersachsen">Niedersachsen</option>
+                        <option value="nordrhein-westfalen">Nordrhein-Westfalen</option>
+                        <option value="rheinland-pfalz">Rheinland-Pfalz</option>
+                        <option value="saarland">Saarland</option>
+                        <option value="sachsen">Sachsen</option>
+                        <option value="sachsen-anhalt">Sachsen-Anhalt</option>
+                        <option value="schleswig-holstein">Schleswig-Holstein</option>
+                        <option value="thueringen">Thüringen</option>
+                    </select>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-primary" id="step1Next">Weiter</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Vermögen -->
+            <div class="form-step" id="step2">
+                <h2>💰 Vermögenswerte</h2>
+                <p class="step-subtitle">Detaillierte Aufschlüsselung aller geerbten Vermögenswerte</p>
+                
+                <div class="form-group">
+                    <label for="privateAssets">
+                        Privatvermögen (Bargeld, Konten, etc.)
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="privateAssets" name="privateAssets" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="businessAssets">
+                        Betriebsvermögen
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="businessAssets" name="businessAssets" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="realEstate">
+                        Immobilien (sonstige)
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="realEstate" name="realEstate" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="familyHome">
+                        Familienheim
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="familyHome" name="familyHome" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="lifeInsurance">
+                        Lebensversicherung
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="lifeInsurance" name="lifeInsurance" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="securities">
+                        Geldvermögen/Wertpapiere
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="securities" name="securities" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="household">
+                        Hausrat/Persönliche Gegenstände
+                        <span class="optional">(optional)</span>
+                        <button type="button" class="info-btn" data-tooltip="Hausrat und persönliche Gegenstände haben je nach Steuerklasse unterschiedliche Freibeträge.">
+                            <img src="assets/info-icon.svg" alt="Info">
+                        </button>
+                    </label>
+                    <input type="text" id="household" name="household" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="agriculture">
+                        Land-/Forstwirtschaft
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="agriculture" name="agriculture" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-total">
+                    <span>💶 Gesamtvermögen: <span id="totalAssets">0,00 €</span></span>
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="step2Prev">Zurück</button>
+                    <button type="button" class="btn btn-primary" id="step2Next">Weiter</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Abzüge -->
+            <div class="form-step" id="step3">
+                <h2>📋 Abzugsfähige Kosten und Lasten</h2>
+                <p class="step-subtitle">Kosten und Verbindlichkeiten, die vom Nachlass abgezogen werden können</p>
+                
+                <div class="form-group">
+                    <label for="debts">
+                        Nachlassschulden
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="debts" name="debts" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="funeralCosts">
+                        Bestattungskosten
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="funeralCosts" name="funeralCosts" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="estateCosts">
+                        Nachlassabwicklungskosten
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="estateCosts" name="estateCosts" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="notaryCosts">
+                        Notar-/Gerichtskosten
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input type="text" id="notaryCosts" name="notaryCosts" placeholder="0,00 €" class="currency-input">
+                </div>
+
+                <h3>Schenkungen der letzten 10 Jahre</h3>
+                <p class="section-hint">
+                    <button type="button" class="info-btn" data-tooltip="Schenkungen innerhalb der letzten 10 Jahre werden auf den Freibetrag angerechnet. Nach 10 Jahren erneuert sich der Freibetrag vollständig.">
+                        <img src="assets/info-icon.svg" alt="Info">
+                    </button>
+                    Vorerwerbe reduzieren den verfügbaren Freibetrag
+                </p>
+                
+                <div id="giftContainer">
+                    <div class="gift-entry">
+                        <div class="form-group-inline">
+                            <div class="form-group">
+                                <label for="giftAmount">
+                                    Betrag (€)
+                                    <span class="optional">(optional)</span>
+                                </label>
+                                <input type="text" id="giftAmount" name="giftAmount" placeholder="0,00 €" class="currency-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="giftYear">
+                                    Jahr
+                                    <span class="optional">(optional)</span>
+                                </label>
+                                <input type="number" id="giftYear" name="giftYear" min="2015" max="2025" placeholder="2022">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-add" id="addGift">Schenkung hinzufügen</button>
+
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="step3Prev">Zurück</button>
+                    <button type="button" class="btn btn-primary" id="step3Next">Weiter</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Besonderheiten -->
+            <div class="form-step" id="step4">
+                <h2>⚙️ Besondere Umstände und Befreiungen</h2>
+                <p class="step-subtitle">Zusätzliche Freibeträge und Steuerbefreiungen</p>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="pflegeleistung" name="pflegeleistung">
+                        <span class="checkbox-text">
+                            💜 Pflegeleistung erbracht (Pflegefreibetrag)
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="disability" name="disability">
+                        <span class="checkbox-text">
+                            Erbe ist schwerbehindert (Behinderten-Pauschbetrag)
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="minorChild" name="minorChild">
+                        <span class="checkbox-text">
+                            Erbe ist minderjährig (zusätzliche Freibeträge)
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="familyHomeSelfUse" name="familyHomeSelfUse">
+                        <span class="checkbox-text">
+                            🏠 Familienheim wird 10 Jahre selbst bewohnt (Befreiung)
+                        </span>
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="businessContinuation" name="businessContinuation">
+                        <span class="checkbox-text">
+                            🏢 Betrieb wird fortgeführt (Betriebsvermögen-Befreiung)
+                        </span>
+                    </label>
+                </div>
+
+                <div class="info-box">
+                    ℹ️ Die Anwendung von Befreiungen ist an strenge Voraussetzungen geknüpft. Lassen Sie sich von einem Steuerberater über die genauen Bedingungen beraten.
+                </div>
+
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="step4Prev">Zurück</button>
+                    <button type="button" class="btn btn-primary btn-calculate" id="calculateBtn">
+                        📊 Erweiterte Erbschaftssteuer berechnen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Ergebnis -->
+            <div class="form-step" id="step5">
+                <h2>📊 Detailliertes Berechnungsergebnis</h2>
+                
+                <div class="result-summary">
+                    <div class="result-item">
+                        <span class="result-label">Gesamtvermögen</span>
+                        <span class="result-value" id="resultTotalAssets">0,00 €</span>
+                    </div>
+                    <div class="result-item highlight-red">
+                        <span class="result-label">Erbschaftssteuer</span>
+                        <span class="result-value" id="resultTax">0,00 €</span>
+                    </div>
+                    <div class="result-item highlight-green">
+                        <span class="result-label">Netto-Erbschaft</span>
+                        <span class="result-value" id="resultNet">0,00 €</span>
+                    </div>
+                </div>
+
+                <div class="result-details">
+                    <h3>Freibeträge und Abzüge</h3>
+                    <table class="result-table">
+                        <tbody id="allowancesTable">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+
+                    <h3>Befreiungen</h3>
+                    <table class="result-table">
+                        <tbody id="exemptionsTable">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+
+                    <h3>Steuerberechnung</h3>
+                    <div class="tax-details">
+                        <div class="tax-detail-row">
+                            <span>Zu versteuernder Betrag</span>
+                            <span id="taxableAmount">0,00 €</span>
+                        </div>
+                        <div class="tax-detail-row">
+                            <span>Steuersatz</span>
+                            <span id="taxRate">0%</span>
+                        </div>
+                        <div class="tax-detail-row">
+                            <span>Steuerklasse</span>
+                            <span id="taxClass">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Angewandte Befreiungen</h3>
+                <ul id="appliedExemptions" class="exemption-list">
+                    <!-- Dynamically populated -->
+                </ul>
+
+                <h3>Wichtige Hinweise</h3>
+                <div class="warning-box">
+                    ⚠️ <span id="importantNotes"></span>
+                </div>
+
+                <div class="disclaimer">
+                    ℹ️ Rechtlicher Hinweis:<br><br>
+                    Diese erweiterte Berechnung berücksichtigt die wichtigsten Faktoren der deutschen Erbschaftsteuer, kann jedoch aufgrund der Komplexität des Steuerrechts nicht alle Sonderfälle und individuellen Umstände erfassen.<br><br>
+                    Insbesondere die Bewertung von Immobilien, Betriebsvermögen und die Anwendung von Befreiungen unterliegen detaillierten gesetzlichen Regelungen und können von den hier verwendeten vereinfachten Methoden abweichen.<br><br>
+                    Für eine verbindliche und vollständige Beratung wenden Sie sich an einen Steuerberater, Fachanwalt für Erbrecht oder das zuständige Finanzamt.
+                </div>
+
+                <div class="cta-container">
+                    <button type="button" class="btn btn-cta" id="ctaButton">
+                        Kostenlose Erstberatung anfragen
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
